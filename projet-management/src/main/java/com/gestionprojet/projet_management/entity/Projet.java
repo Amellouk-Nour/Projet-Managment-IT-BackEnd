@@ -2,8 +2,10 @@ package com.gestionprojet.projet_management.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Entity
+@Data
 public class Projet {
 
     @Id
@@ -17,12 +19,5 @@ public class Projet {
 
     private LocalDateTime createdAt;
 
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-    public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
 }

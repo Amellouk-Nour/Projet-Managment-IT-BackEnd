@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8e5bbc72-5557-40f3-9db4-40f18708db47" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000000008255188" />
+      <entry key="S2" value="1.0057959137399624" />
+      <entry key="S5" value="1.2213016567151678" />
+      <entry key="S10" value="2.1899430843746517" />
+      <entry key="S30" value="7.202234520875309" />
+      <entry key="S60" value="12.757207293117446" />
+      <entry key="M2" value="18.856181416457492" />
+      <entry key="M5" value="26.76147296875232" />
+      <entry key="M10" value="38.50767215848395" />
+      <entry key="M15" value="50.18138509580353" />
+      <entry key="M30" value="75.88384347719641" />
+      <entry key="H1" value="100.34857650470569" />
+      <entry key="H2" value="117.73087406646017" />
+      <entry key="H4" value="128.16813445655438" />
+      <entry key="D1" value="137.92277471415233" />
+      <entry key="W1" value="139.70055848157827" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="8.843631994041371E-158" />
+      <entry key="MS500" value="3.884419560817352E-32" />
+      <entry key="S2" value="1.403884997822058E-8" />
+      <entry key="S5" value="7.22657664636174E-4" />
+      <entry key="S10" value="0.02688229277119373" />
+      <entry key="S30" value="0.2995634122460415" />
+      <entry key="S60" value="0.5473239019112083" />
+      <entry key="M2" value="0.7400883635733213" />
+      <entry key="M5" value="0.9488338687988933" />
+      <entry key="M10" value="1.4678491272152951" />
+      <entry key="M15" value="2.1973940300509986" />
+      <entry key="M30" value="4.173157150664022" />
+      <entry key="H1" value="6.297293540852432" />
+      <entry key="H2" value="7.8900213535645785" />
+      <entry key="H4" value="8.870539847219602" />
+      <entry key="D1" value="9.8004549987647" />
+      <entry key="W1" value="9.971203349039328" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="7.26080982881198E-26" />
+      <entry key="MS500" value="9.379888773015902E-6" />
+      <entry key="S2" value="0.05771514999256148" />
+      <entry key="S5" value="0.4919580797089659" />
+      <entry key="S10" value="1.6920749020186547" />
+      <entry key="S30" value="7.2068840187281475" />
+      <entry key="S60" value="13.08891068658903" />
+      <entry key="M2" value="19.44469130097214" />
+      <entry key="M5" value="27.62656683306876" />
+      <entry key="M10" value="39.91946748789671" />
+      <entry key="M15" value="52.33273944091635" />
+      <entry key="M30" value="80.02481233481838" />
+      <entry key="H1" value="106.62551739397612" />
+      <entry key="H2" value="125.60922292355494" />
+      <entry key="H4" value="137.0323912090005" />
+      <entry key="D1" value="147.72211314264186" />
+      <entry key="W1" value="149.67160051689646" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="3EiqElzO5kJ1uV9fdaYXf5TnGB3" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Unnamed.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "backend/first__commit",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ProjetManagementApplication.java" />
+      <module name="projet-management" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8e5bbc72-5557-40f3-9db4-40f18708db47" name="Changes" comment="" />
+      <created>1780671629495</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1780671629495</updated>
+      <workItem from="1780671634996" duration="4236000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
