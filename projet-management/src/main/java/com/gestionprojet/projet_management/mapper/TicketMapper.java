@@ -3,10 +3,21 @@ package com.gestionprojet.projet_management.mapper;
 import com.gestionprojet.projet_management.dto.TicketDTO;
 import com.gestionprojet.projet_management.entity.Ticket;
 import com.gestionprojet.projet_management.entity.TicketStatus;
+import com.gestionprojet.projet_management.repository.UserStoryRepository;
+import com.gestionprojet.projet_management.repository.UtilisateurRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TicketMapper {
+
+    private final UtilisateurRepository utilisateurRepo;
+    private final UserStoryRepository userStoryRepo;
+
+    public TicketMapper(UtilisateurRepository utilisateurRepo, UserStoryRepository userStoryRepo) {
+        this.utilisateurRepo = utilisateurRepo;
+        this.userStoryRepo = userStoryRepo;
+    }
+
     public TicketDTO toDto(Ticket ticket){
         TicketDTO dto = new TicketDTO();
         dto.setTitre(ticket.getTitre());
@@ -20,11 +31,19 @@ public class TicketMapper {
         dto.setTempsReview(ticket.getTempsReview());
         dto.setTempsTest(ticket.getTempsTest());
         dto.setDueAt(ticket.getDueAt());
+        dto.setAssignedToId(ticket.getAssignedTo() != null ? ticket.getAssignedTo().getId() : null);
+        dto.setUserStoryId(ticket.getUserStory() != null ? ticket.getUserStory().getId() : null);
         return dto;
     }
 
     public Ticket toEntity(TicketDTO dto){
         Ticket ticket = new Ticket();
+        if (dto.getAssignedToId() != null) {
+            ticket.setAssignedTo(utilisateurRepo.findById(dto.getAssignedToId()).orElse(null));
+        }
+        if (dto.getUserStoryId() != null) {
+            ticket.setUserStory(userStoryRepo.findById(dto.getUserStoryId()).orElse(null));
+        }
         updateTicket(dto,ticket);
         return ticket;
     }
@@ -43,5 +62,11 @@ public class TicketMapper {
         ticket.setTempsReview(dto.getTempsReview());
         ticket.setTempsTest(dto.getTempsTest());
         ticket.setDueAt(dto.getDueAt());
+        if (dto.getAssignedToId() != null) {
+            ticket.setAssignedTo(utilisateurRepo.findById(dto.getAssignedToId()).orElse(null));
+        }
+        if (dto.getUserStoryId() != null) {
+            ticket.setUserStory(userStoryRepo.findById(dto.getUserStoryId()).orElse(null));
+        }
     }
 }
