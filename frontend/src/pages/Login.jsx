@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import useAuthStore from '../store/authStore';
+import { useLoginMutation, useRegisterMutation } from '../hooks/useAuthMutations';
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [form, setForm] = useState({ username: '', password: '', email: '', role: 'Développeur' });
   const [error, setError] = useState('');
-  const { user, login, register, logout } = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
+
+  const loginMutation = useLoginMutation();
+  const registerMutation = useRegisterMutation();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -16,9 +21,9 @@ export default function Login() {
     setError('');
     try {
       if (isRegister) {
-        await register(form);
+        await registerMutation.mutateAsync(form);
       } else {
-        await login(form.username, form.password);
+        await loginMutation.mutateAsync({ username: form.username, password: form.password });
       }
       navigate('/dashboard');
     } catch (err) {
@@ -46,6 +51,7 @@ export default function Login() {
             </div>
           </div>
         )}
+
         <form onSubmit={handleSubmit}>
           {error && <div className="form-error">{error}</div>}
 
@@ -79,8 +85,8 @@ export default function Login() {
             <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Entrez votre mot de passe" required />
           </div>
 
-          <button type="submit" className="btn-primary">
-            {isRegister ? "S'inscrire" : 'Se connecter'}
+          <button type="submit" className="btn-primary" disabled={loginMutation.isPending || registerMutation.isPending}>
+            {loginMutation.isPending || registerMutation.isPending ? 'Chargement...' : (isRegister ? "S'inscrire" : 'Se connecter')}
           </button>
         </form>
 
