@@ -35,12 +35,12 @@ export default function Login() {
 
   const loginMutation = useMutation({
     mutationFn: () => authApi.login({ username: form.username, password: form.password }),
-    onSuccess: () => { navigate(ROUTES.DASHBOARD); },
+    onSuccess: (data) => { setAuth(data.token); navigate(ROUTES.DASHBOARD); },
   });
 
   const registerMutation = useMutation({
     mutationFn: () => authApi.register(form),
-    onSuccess: () => { navigate(ROUTES.DASHBOARD); },
+    onSuccess: (data) => { setAuth(data.token); navigate(ROUTES.DASHBOARD); },
   });
 
   const pending = loginMutation.isPending || registerMutation.isPending;
