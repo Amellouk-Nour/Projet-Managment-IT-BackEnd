@@ -1,8 +1,6 @@
 import axios from 'axios';
-import { API_PATHS } from '@/constants/paths';
-
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
 });
 
 api.interceptors.request.use((config) => {
@@ -23,10 +21,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export const authApi = {
-  login: (data) => api.post(API_PATHS.LOGIN, data).then((r) => r.data),
-  register: (data) => api.post(API_PATHS.REGISTER, data).then((r) => r.data),
-};
 
 export default api;

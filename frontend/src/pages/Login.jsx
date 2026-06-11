@@ -1,8 +1,7 @@
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import useAuthStore, { setAuth, logout } from '@/store/authStore';
-import { authApi } from '@/api/axios';
+import useAuthStore, { logout } from '@/store/authStore';
+import { useLoginMutation, useRegisterMutation } from '@/hooks/useAuthMutations';
 import { ROUTES } from '@/constants/paths';
 
 const initialForm = { username: '', password: '', email: '', role: 'Développeur' };
@@ -33,15 +32,8 @@ export default function Login() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
 
-  const loginMutation = useMutation({
-    mutationFn: () => authApi.login({ username: form.username, password: form.password }),
-    onSuccess: (data) => { setAuth(data.token); navigate(ROUTES.DASHBOARD); },
-  });
-
-  const registerMutation = useMutation({
-    mutationFn: () => authApi.register(form),
-    onSuccess: (data) => { setAuth(data.token); navigate(ROUTES.DASHBOARD); },
-  });
+  const loginMutation = useLoginMutation(form);
+  const registerMutation = useRegisterMutation(form);
 
   const pending = loginMutation.isPending || registerMutation.isPending;
   const errorMessage = getErrorMessage(loginMutation.error || registerMutation.error);

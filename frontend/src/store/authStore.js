@@ -1,22 +1,22 @@
 import { create } from 'zustand';
 import { getUserFromToken } from '@/utils/token';
 
-const useAuthStore = create(() => {
+const useAuthStore = create((set, get) => {
   const stored = localStorage.getItem('token');
-  const user = stored ? getUserFromToken(stored) : null;
-  return { user, token: stored };
+  return {
+    user: stored ? getUserFromToken(stored) : null,
+    token: stored,
+    setAuth: (token) => {
+      localStorage.setItem('token', token);
+      set({ token, user: getUserFromToken(token) });
+    },
+    logout: () => {
+      localStorage.removeItem('token');
+      set({ user: null, token: null });
+    },
+  };
 });
 
-const set = useAuthStore.setState;
-
-export const setAuth = (token) => {
-  localStorage.setItem('token', token);
-  set({ token, user: getUserFromToken(token) });
-};
-
-export const logout = () => {
-  localStorage.removeItem('token');
-  set({ user: null, token: null });
-};
+export const { setAuth, logout } = useAuthStore.getState();
 
 export default useAuthStore;
