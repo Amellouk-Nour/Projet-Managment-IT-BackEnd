@@ -1,6 +1,6 @@
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore, { logout } from '@/store/authStore';
+import useAuthStore from '@/store/authStore';
 import { useLoginMutation, useRegisterMutation } from '@/hooks/useAuthMutations';
 import { ROUTES } from '@/constants/paths';
 
@@ -30,6 +30,7 @@ export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [form, dispatch] = useReducer(formReducer, initialForm);
   const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
 
   const loginMutation = useLoginMutation(form);

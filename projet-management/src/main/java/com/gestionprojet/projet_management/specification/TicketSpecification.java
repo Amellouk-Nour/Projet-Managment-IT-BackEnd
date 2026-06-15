@@ -3,6 +3,7 @@ package com.gestionprojet.projet_management.specification;
 import com.gestionprojet.projet_management.entity.Ticket;
 import com.gestionprojet.projet_management.entity.TicketStatus;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -50,6 +51,18 @@ public class TicketSpecification {
         return (root, query, cb) -> {
             if (date == null) return null;
             return cb.greaterThanOrEqualTo(root.get("dueAt"), date);
+        };
+    }
+
+    public static Specification<Ticket> createdByOrAssignedTo(Integer userId) {
+        return (root, query, cb) -> {
+            if (userId == null) return null;
+            Join<Object, Object> createdBy = root.join("createdBy", JoinType.LEFT);
+            Join<Object, Object> assignedTo = root.join("assignedTo", JoinType.LEFT);
+            return cb.or(
+                cb.equal(createdBy.get("id"), userId),
+                cb.equal(assignedTo.get("id"), userId)
+            );
         };
     }
 }

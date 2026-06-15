@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from '@/store/authStore';
 import Login from '@/pages/Login';
+import Dashboard from '@/pages/Dashboard';
+import TicketDetail from '@/pages/TicketDetail';
 import { ROUTES } from '@/constants/paths';
 
 function ProtectedRoute({ children }) {
@@ -14,7 +16,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.DASHBOARD} element={<ProtectedRoute><div>Dashboard (à venir)</div></ProtectedRoute>} />
+        <Route path={ROUTES.DASHBOARD} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path={ROUTES.TICKET_DETAIL} element={<ProtectedRoute><TicketDetail /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to={ROUTES.LOGIN} />} />
       </Routes>
     </BrowserRouter>

@@ -29,7 +29,9 @@ public class TicketDTO {
     @Positive
     private BigDecimal tempsTest;
     private LocalDate dueAt;
+    private Integer id;
     private Integer assignedToId;
+    private String assignedToUsername;
     private Integer userStoryId;
 
 }

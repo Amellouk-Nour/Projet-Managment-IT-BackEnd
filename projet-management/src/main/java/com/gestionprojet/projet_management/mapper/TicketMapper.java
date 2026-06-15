@@ -20,6 +20,7 @@ public class TicketMapper {
 
     public TicketDTO toDto(Ticket ticket){
         TicketDTO dto = new TicketDTO();
+        dto.setId(ticket.getId());
         dto.setTitre(ticket.getTitre());
         dto.setDescription(ticket.getDescription());
         dto.setStatut(ticket.getStatut() != null ? ticket.getStatut().name() : null);
@@ -32,6 +33,7 @@ public class TicketMapper {
         dto.setTempsTest(ticket.getTempsTest());
         dto.setDueAt(ticket.getDueAt());
         dto.setAssignedToId(ticket.getAssignedTo() != null ? ticket.getAssignedTo().getId() : null);
+        dto.setAssignedToUsername(ticket.getAssignedTo() != null ? ticket.getAssignedTo().getUsername() : null);
         dto.setUserStoryId(ticket.getUserStory() != null ? ticket.getUserStory().getId() : null);
         return dto;
     }
