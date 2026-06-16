@@ -33,11 +33,10 @@ export default function Login() {
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
 
-  const loginMutation = useLoginMutation(form);
-  const registerMutation = useRegisterMutation(form);
+  const mutation = isRegister ? useRegisterMutation(form) : useLoginMutation(form);
 
-  const pending = loginMutation.isPending || registerMutation.isPending;
-  const errorMessage = getErrorMessage(loginMutation.error || registerMutation.error);
+  const pending = mutation.isPending;
+  const errorMessage = getErrorMessage(mutation.error);
 
   const setField = (field) => (e) => dispatch({ type: 'SET_FIELD', field, value: e.target.value });
 
@@ -60,7 +59,7 @@ export default function Login() {
 
         <form onSubmit={(e) => {
           e.preventDefault();
-          isRegister ? registerMutation.mutate() : loginMutation.mutate();
+          mutation.mutate();
         }}>
           {errorMessage && <div className="form-error">{errorMessage}</div>}
 

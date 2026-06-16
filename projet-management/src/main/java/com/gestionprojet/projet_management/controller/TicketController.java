@@ -99,7 +99,7 @@ public class TicketController {
         }
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping(ApiPaths.TICKET_STATUS)
     public ResponseEntity<TicketDTO> updateStatus(@PathVariable Integer id, @RequestBody Map<String, String> body, Authentication authentication) {
         Optional<Ticket> ticket = repo.findById(id);
         if (ticket.isPresent()) {
