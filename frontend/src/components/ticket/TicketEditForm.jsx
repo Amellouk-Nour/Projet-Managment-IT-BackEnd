@@ -1,20 +1,14 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useTicketForm } from '@/hooks/useTicketForm';
-import { fetchUserStories } from '@/services/userStoryService';
-import { fetchUsers } from '@/services/userService';
+import { useUserStories } from '@/hooks/useUserStories';
+import { useUsers } from '@/hooks/useUsers';
+
 
 export default function TicketEditForm({ ticket, onCancel }) {
   const { form, set, handleSave, updateMutation, STATUS_OPTIONS } = useTicketForm(ticket, onCancel);
   const [userSearch, setUserSearch] = useState('');
-  const { data: userStories = [] } = useQuery({
-    queryKey: ['userStories'],
-    queryFn: fetchUserStories,
-  });
-  const { data: users = [] } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
-  });
+  const { data: userStories = [] } = useUserStories();
+  const { data: users = [] } = useUsers();
   const filteredUsers = users.filter((u) => u.username.toLowerCase().includes(userSearch.toLowerCase()));
 
   return (

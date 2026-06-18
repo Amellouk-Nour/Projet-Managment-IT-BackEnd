@@ -2,73 +2,47 @@ package com.gestionprojet.projet_management.controller;
 
 import com.gestionprojet.projet_management.constant.ApiPaths;
 import com.gestionprojet.projet_management.dto.UserStoryDTO;
-import com.gestionprojet.projet_management.entity.UserStory;
-import com.gestionprojet.projet_management.mapper.UserStoryMapper;
-import com.gestionprojet.projet_management.repository.UserStoryRepository;
+import com.gestionprojet.projet_management.service.UserStoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(ApiPaths.USER_STORIES)
 public class UserStoryController {
 
-    private final UserStoryRepository repo;
-    private final UserStoryMapper mapper;
+    private final UserStoryService service;
 
-    public UserStoryController(UserStoryRepository repo, UserStoryMapper mapper) {
-        this.repo = repo;
-        this.mapper = mapper;
+    public UserStoryController(UserStoryService service) {
+        this.service = service;
     }
 
     @GetMapping
     public ResponseEntity<List<UserStoryDTO>> getAllUserStories() {
-        List<UserStory> stories = repo.findAll();
-        List<UserStoryDTO> userStories = stories.stream().map(mapper::toDto).toList();
-        return ResponseEntity.ok(userStories);
+        return ResponseEntity.ok(service.getAllUserStories());
     }
 
     @PostMapping
-    public ResponseEntity<UserStoryDTO> createUserStory(@Valid @RequestBody UserStoryDTO dto){
-        UserStory userStory = mapper.toEntity(dto);
-        UserStory saved = repo.save(userStory);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(saved));
+    public ResponseEntity<UserStoryDTO> createUserStory(@Valid @RequestBody UserStoryDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createUserStory(dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable Integer id){
-        Optional<UserStory> userStory = repo.findById(id);
-        if(userStory.isPresent()){
-            return ResponseEntity.ok(mapper.toDto(userStory.get()));
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.getUserStoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> updateUserStory(@PathVariable Integer id, @Valid @RequestBody UserStoryDTO dto){
-        Optional<UserStory> userStory = repo.findById(id);
-        if(userStory.isPresent()){
-            UserStory u = userStory.get();
-            mapper.updateUserStory(dto, u);
-            UserStory saved = repo.save(u);
-            return ResponseEntity.ok(mapper.toDto(saved));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<UserStoryDTO> updateUserStory(@PathVariable Integer id, @Valid @RequestBody UserStoryDTO dto) {
+        return ResponseEntity.ok(service.updateUserStory(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserStory(@PathVariable Integer id){
-        Optional<UserStory> userStory = repo.findById(id);
-        if(userStory.isPresent()) {
-            repo.delete(userStory.get());
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<Void> deleteUserStory(@PathVariable Integer id) {
+        service.deleteUserStory(id);
+        return ResponseEntity.noContent().build();
     }
 }

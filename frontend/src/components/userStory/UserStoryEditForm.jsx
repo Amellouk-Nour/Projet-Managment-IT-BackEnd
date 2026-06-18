@@ -1,7 +1,13 @@
+import { useParams } from 'react-router-dom';
 import { useUserStoryForm } from '@/hooks/useUserStoryForm';
+import { useFetchUserStory } from '@/hooks/useFetchUserStory';
 
-export default function UserStoryEditForm({ story, onCancel }) {
+export default function UserStoryEditForm({ onCancel }) {
+  const { id } = useParams();
+  const { data: story } = useFetchUserStory(id);
   const { form, set, handleSave, updateMutation, PRIORITES, STATUS_OPTIONS } = useUserStoryForm(story, onCancel);
+
+  if (!story) return <div className="loading-screen">Chargement...</div>;
 
   return (
     <div className="detail-page">

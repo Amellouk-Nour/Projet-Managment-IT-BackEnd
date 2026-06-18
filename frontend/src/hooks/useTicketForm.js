@@ -22,7 +22,6 @@ function formReducer(state, action) {
 export function useTicketForm(ticket, onCancel) {
   const queryClient = useQueryClient();
   const initialForm = { ...ticket };
-  console.log('useTicketForm init:', { ticketAssignedToId: ticket.assignedToId, ticket });
   const [form, dispatch] = useReducer(formReducer, initialForm);
 
   const set = (field, value) => dispatch({ type: 'SET', field, value });
@@ -43,13 +42,11 @@ export function useTicketForm(ticket, onCancel) {
       { id: ticket.id, data },
       {
         onSuccess: (responseData) => {
-          console.log('Save response:', responseData);
           queryClient.setQueryData(['ticket', ticket.id], responseData);
           queryClient.invalidateQueries({ queryKey: ['tickets'] });
           onCancel();
         },
         onError: (err) => {
-          console.error('Save failed:', err);
         },
       }
     );

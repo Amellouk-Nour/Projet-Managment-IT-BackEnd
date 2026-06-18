@@ -1,6 +1,8 @@
 import { useDraggable } from '@dnd-kit/core';
+import { useNavigate } from 'react-router-dom';
 
-export default function KanbanCard({ ticket, onCardClick }) {
+export default function KanbanCard({ ticket }) {
+  const navigate = useNavigate();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `ticket-${ticket.id}`,
     data: { ticket },
@@ -12,7 +14,7 @@ export default function KanbanCard({ ticket, onCardClick }) {
       {...listeners}
       {...attributes}
       className={`kanban-card${isDragging ? ' kanban-card-dragging' : ''}`}
-      onClick={() => onCardClick?.(ticket)}
+      onClick={() => navigate(`/tickets/${ticket.id}`)}
       role="button"
       tabIndex={0}
     >

@@ -10,7 +10,7 @@ export default function UserStoriesList() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const [showForm, setShowForm] = useState(false);
-  const { data: stories = [], isLoading } = useUserStories(true);
+  const { data: stories = [], isLoading } = useUserStories();
 
   if (isLoading) return <div className="loading-screen">Chargement...</div>;
 

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { useFetchUserStory } from '@/hooks/useFetchUserStory';
 import { useDeleteUserStory } from '@/hooks/useDeleteUserStory';
-import { fetchTickets } from '@/services/ticketService';
+import { useTicketsByUserStory } from '@/hooks/useTicketsByUserStory';
 import UserStoryEditForm from '@/components/userStory/UserStoryEditForm';
 import { ROUTES } from '@/constants/paths';
 
@@ -17,11 +16,7 @@ export default function UserStoryDetail() {
   const navigate = useNavigate();
   const { data: story, isLoading } = useFetchUserStory(id);
   const deleteMutation = useDeleteUserStory();
-  const { data: tickets = [] } = useQuery({
-    queryKey: ['tickets', 'userStory', id],
-    queryFn: () => fetchTickets({ userStoryId: id }),
-    enabled: !!id,
-  });
+  const { data: tickets = [] } = useTicketsByUserStory(id);
 
   const [editing, setEditing] = useState(false);
 
@@ -36,7 +31,7 @@ export default function UserStoryDetail() {
   if (!story) return <div className="loading-screen">User story non trouvée</div>;
 
   if (editing) {
-    return <UserStoryEditForm story={story} onCancel={() => setEditing(false)} />;
+    return <UserStoryEditForm onCancel={() => setEditing(false)} />;
   }
 
   return (

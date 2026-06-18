@@ -1,4 +1,7 @@
 import { useReducer, useState } from 'react';
+import { useUserStories } from '@/hooks/useUserStories';
+import { useUsers } from '@/hooks/useUsers';
+import { useCreateTicket } from '@/hooks/useCreateTicket';
 
 const STATUS_OPTIONS = [
   { value: 'a_faire', label: 'À faire' },
@@ -33,10 +36,13 @@ function formReducer(state, action) {
   }
 }
 
-export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories, users }) {
+export default function TicketFormModal({ isOpen, onClose }) {
   const [form, dispatch] = useReducer(formReducer, initialState);
   const [userSearch, setUserSearch] = useState('');
-  const filteredUsers = (users || []).filter((u) => u.username.toLowerCase().includes(userSearch.toLowerCase()));
+  const { data: userStories = [] } = useUserStories(isOpen);
+  const { data: users = [] } = useUsers(isOpen);
+  const createMutation = useCreateTicket();
+  const filteredUsers = users.filter((u) => u.username.toLowerCase().includes(userSearch.toLowerCase()));
 
   if (!isOpen) return null;
 
@@ -54,9 +60,12 @@ export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories
       assigneeIds: form.assigneeIds ? form.assigneeIds.map(Number) : [],
       userStoryId: form.userStoryId ? Number(form.userStoryId) : undefined,
     };
-    onSubmit(payload);
-    dispatch({ type: 'RESET' });
-    onClose();
+    createMutation.mutate(payload, {
+      onSuccess: () => {
+        dispatch({ type: 'RESET' });
+        onClose();
+      },
+    });
   }
 
   function set(field, value) {

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import KanbanColumn from './KanbanColumn';
 import KanbanCard from './KanbanCard';
@@ -7,7 +6,6 @@ import { useTicketBoard } from '@/hooks/useTicketBoard';
 import { useUpdateTicketStatus } from '@/hooks/useUpdateTicketStatus';
 
 export default function KanbanBoard() {
-  const navigate = useNavigate();
   const { columns, isLoading, error } = useTicketBoard();
   const updateStatus = useUpdateTicketStatus();
   const [activeTicket, setActiveTicket] = useState(null);
@@ -38,7 +36,7 @@ export default function KanbanBoard() {
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="kanban-board">
         {columns.map((col) => (
-          <KanbanColumn key={col.key} column={col} onCardClick={(ticket) => navigate(`/tickets/${ticket.id}`)} />
+          <KanbanColumn key={col.key} column={col} />
         ))}
       </div>
       <DragOverlay>

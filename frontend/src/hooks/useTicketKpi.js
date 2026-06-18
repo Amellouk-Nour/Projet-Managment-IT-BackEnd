@@ -1,4 +1,11 @@
-export function useTicketKpi(tickets, users) {
+import { useQuery } from '@tanstack/react-query';
+import { fetchTickets } from '@/services/ticketService';
+import { fetchUsers } from '@/services/userService';
+
+export function useTicketKpi() {
+  const { data: tickets = [] } = useQuery({ queryKey: ['tickets'], queryFn: fetchTickets });
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
+
   const total = tickets.length;
   const completed = tickets.filter((t) => t.statut === 'test_valide').length;
   const inProgress = tickets.filter((t) => t.statut !== 'test_valide' && t.statut !== 'a_faire').length;

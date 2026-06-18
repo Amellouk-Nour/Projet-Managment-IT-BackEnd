@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import KanbanBoard from '@/components/kanban/KanbanBoard';
 import TicketFormModal from '@/components/kanban/TicketFormModal';
-import { useCreateTicket } from '@/hooks/useCreateTicket';
-import { useUserStories } from '@/hooks/useUserStories';
-import { fetchUsers } from '@/services/userService';
-import { fetchTickets } from '@/services/ticketService';
 import { useTicketKpi } from '@/hooks/useTicketKpi';
 import useAuthStore from '@/store/authStore';
 import { ROUTES } from '@/constants/paths';
@@ -15,12 +10,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const createMutation = useCreateTicket();
   const [showForm, setShowForm] = useState(false);
-  const { data: userStories = [] } = useUserStories(showForm);
-  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
-  const { data: tickets = [], isLoading } = useQuery({ queryKey: ['tickets'], queryFn: fetchTickets });
-  const kpi = useTicketKpi(tickets, users);
+  const kpi = useTicketKpi();
   const myStats = kpi.userStats.find((u) => u.id === user?.id);
 
   return (
@@ -35,9 +26,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {!isLoading && (
-        <>
-          <div className="kpi-grid">
+      <div className="kpi-grid">
             <div className="kpi-card">
               <span className="kpi-value">{kpi.total}</span>
               <span className="kpi-label">Total tickets</span>
@@ -77,18 +66,11 @@ export default function Dashboard() {
             </div>
           )}
 
-
-        </>
-      )}
-
       <KanbanBoard />
       {showForm && (
         <TicketFormModal
           isOpen={showForm}
           onClose={() => setShowForm(false)}
-          onSubmit={(data) => createMutation.mutate(data)}
-          userStories={userStories}
-          users={users}
         />
       )}
     </div>

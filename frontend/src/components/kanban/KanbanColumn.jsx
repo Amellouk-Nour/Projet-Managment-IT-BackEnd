@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import KanbanCard from './KanbanCard';
 
-export default function KanbanColumn({ column, onCardClick }) {
+export default function KanbanColumn({ column }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${column.key}`,
     data: { columnKey: column.key },
@@ -15,7 +15,7 @@ export default function KanbanColumn({ column, onCardClick }) {
       </div>
       <div className="kanban-column-body">
         {column.tickets.map((ticket) => (
-          <KanbanCard key={ticket.id} ticket={ticket} onCardClick={onCardClick} />
+          <KanbanCard key={ticket.id} ticket={ticket} />
         ))}
       </div>
     </div>

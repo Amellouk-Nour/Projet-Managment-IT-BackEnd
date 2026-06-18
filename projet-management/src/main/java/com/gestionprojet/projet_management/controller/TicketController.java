@@ -2,14 +2,9 @@ package com.gestionprojet.projet_management.controller;
 
 import com.gestionprojet.projet_management.constant.ApiPaths;
 import com.gestionprojet.projet_management.dto.TicketDTO;
-import com.gestionprojet.projet_management.entity.Ticket;
-import com.gestionprojet.projet_management.entity.TicketStatus;
 import com.gestionprojet.projet_management.entity.Utilisateur;
-import com.gestionprojet.projet_management.mapper.TicketMapper;
-import com.gestionprojet.projet_management.repository.TicketRepository;
-import com.gestionprojet.projet_management.specification.TicketSpecification;
+import com.gestionprojet.projet_management.service.TicketService;
 import jakarta.validation.Valid;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,21 +12,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(ApiPaths.TICKETS)
 public class TicketController {
 
-    private final TicketRepository repo;
-    private final TicketMapper mapper;
+    private final TicketService service;
 
-    public TicketController(TicketRepository repo, TicketMapper mapper) {
-        this.repo = repo;
-        this.mapper = mapper;
+    public TicketController(TicketService service) {
+        this.service = service;
     }
 
     @GetMapping
@@ -45,90 +36,36 @@ public class TicketController {
             Authentication authentication) {
 
         Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
-        boolean isAdmin = "Administrateur".equalsIgnoreCase(currentUser.getRole())
-                       || "admin".equalsIgnoreCase(currentUser.getRole());
-
-        Specification<Ticket> spec = Specification
-                .where(TicketSpecification.hasStatut(statut))
-                .and(TicketSpecification.hasPriorite(priorite))
-                .and(TicketSpecification.hasAssignedToId(assignedToId))
-                .and(TicketSpecification.hasUserStoryId(userStoryId))
-                .and(TicketSpecification.dueAtBefore(dueAtBefore))
-                .and(TicketSpecification.dueAtAfter(dueAtAfter));
-
-        if (!isAdmin) {
-            spec = spec.and(TicketSpecification.createdByOrAssignedTo(currentUser.getId()));
-        }
-
-        List<TicketDTO> tickets = repo.findAll(spec).stream().map(mapper::toDto).toList();
+        List<TicketDTO> tickets = service.getAllTickets(statut, priorite, assignedToId, userStoryId, dueAtBefore, dueAtAfter, currentUser);
         return ResponseEntity.ok(tickets);
     }
 
     @PostMapping
-    public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO dto, Authentication authentication){
+    public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody TicketDTO dto, Authentication authentication) {
         Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
-        Ticket ticket = mapper.toEntity(dto);
-        ticket.setCreatedBy(currentUser);
-        if (ticket.getAssignees() == null || ticket.getAssignees().isEmpty()) {
-            ticket.setAssignees(new HashSet<>());
-            ticket.getAssignees().add(currentUser);
-        }
-        Ticket saved = repo.save(ticket);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(saved));
+        TicketDTO created = service.createTicket(dto, currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TicketDTO> getTicketById(@PathVariable Integer id){
-        Optional<Ticket> ticket = repo.findById(id);
-        if(ticket.isPresent()){
-            return ResponseEntity.ok(mapper.toDto(ticket.get()));
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<TicketDTO> getTicketById(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.getTicketById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TicketDTO> updateTicket(@PathVariable Integer id, @Valid @RequestBody TicketDTO dto){
-        Optional<Ticket> ticket = repo.findById(id);
-        if(ticket.isPresent()){
-            Ticket t = ticket.get();
-            mapper.updateTicket(dto, t);
-            Ticket saved = repo.save(t);
-            return ResponseEntity.ok(mapper.toDto(saved));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<TicketDTO> updateTicket(@PathVariable Integer id, @Valid @RequestBody TicketDTO dto) {
+        return ResponseEntity.ok(service.updateTicket(id, dto));
     }
 
     @PatchMapping(ApiPaths.TICKET_STATUS)
     public ResponseEntity<TicketDTO> updateStatus(@PathVariable Integer id, @RequestBody Map<String, String> body, Authentication authentication) {
-        Optional<Ticket> ticket = repo.findById(id);
-        if (ticket.isPresent()) {
-            Ticket t = ticket.get();
-            Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
-            boolean isAdmin = "Administrateur".equalsIgnoreCase(currentUser.getRole())
-                           || "admin".equalsIgnoreCase(currentUser.getRole());
-            if (!isAdmin
-                && (t.getCreatedBy() == null || !t.getCreatedBy().getId().equals(currentUser.getId()))
-                && (t.getAssignees() == null || t.getAssignees().stream().noneMatch(u -> u.getId().equals(currentUser.getId())))) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            t.setStatut(TicketStatus.valueOf(body.get("statut")));
-            Ticket saved = repo.save(t);
-            return ResponseEntity.ok(mapper.toDto(saved));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
+        return ResponseEntity.ok(service.updateStatus(id, body.get("statut"), currentUser));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable Integer id){
-        Optional<Ticket> ticket = repo.findById(id);
-        if(ticket.isPresent()) {
-            repo.delete(ticket.get());
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }   
+    public ResponseEntity<Void> deleteTicket(@PathVariable Integer id) {
+        service.deleteTicket(id);
+        return ResponseEntity.noContent().build();
+    }
 }
-

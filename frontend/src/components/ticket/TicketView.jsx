@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useDeleteTicket } from '@/hooks/useDeleteTicket';
 import { ROUTES } from '@/constants/paths';
 
 const STATUS_OPTIONS = [
@@ -10,9 +11,16 @@ const STATUS_OPTIONS = [
   { value: 'CANCELED', label: 'Canceled' },
 ];
 
-export default function TicketView({ ticket, onEdit, onDelete }) {
+export default function TicketView({ ticket, onEdit }) {
   const navigate = useNavigate();
-  console.log('TicketView render:', ticket);
+  const deleteMutation = useDeleteTicket();
+
+  function handleDelete() {
+    if (!confirm('Supprimer ce ticket ?')) return;
+    deleteMutation.mutate(ticket.id, {
+      onSuccess: () => navigate(ROUTES.DASHBOARD),
+    });
+  }
 
   return (
     <div className="detail-page">
@@ -21,7 +29,7 @@ export default function TicketView({ ticket, onEdit, onDelete }) {
           <button className="link-btn" onClick={() => navigate(ROUTES.DASHBOARD)}>&larr; Retour</button>
           <div className="detail-actions">
             <button className="btn-secondary" onClick={onEdit}>Modifier</button>
-            <button className="btn-danger" onClick={onDelete}>Supprimer</button>
+            <button className="btn-danger" onClick={handleDelete}>Supprimer</button>
           </div>
         </div>
         <h2 className="detail-title">{ticket.titre}</h2>
