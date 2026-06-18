@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class UtilisateurMapper {
     public UtilisateurDTO toDto(Utilisateur utilisateur){
         UtilisateurDTO dto = new UtilisateurDTO();
+        dto.setId(utilisateur.getId());
         dto.setRole(utilisateur.getRole());
         dto.setUsername(utilisateur.getUsername());
         dto.setEmail(utilisateur.getEmail());

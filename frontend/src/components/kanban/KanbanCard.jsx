@@ -18,6 +18,9 @@ export default function KanbanCard({ ticket, onCardClick }) {
     >
       <div className="kanban-card-title">{ticket.titre}</div>
       {ticket.priorite && <span className={`kanban-priority p-${ticket.priorite}`}>P{ticket.priorite}</span>}
+      {ticket.assigneeUsernames?.length > 0 && (
+        <div className="kanban-card-assignees">{ticket.assigneeUsernames.join(', ')}</div>
+      )}
     </div>
   );
 }

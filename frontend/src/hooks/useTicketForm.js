@@ -1,4 +1,5 @@
 import { useReducer } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUpdateTicket } from './useUpdateTicket';
 
 const STATUS_OPTIONS = [
@@ -19,19 +20,38 @@ function formReducer(state, action) {
 }
 
 export function useTicketForm(ticket, onCancel) {
-  const [form, dispatch] = useReducer(formReducer, ticket);
+  const queryClient = useQueryClient();
+  const initialForm = { ...ticket };
+  console.log('useTicketForm init:', { ticketAssignedToId: ticket.assignedToId, ticket });
+  const [form, dispatch] = useReducer(formReducer, initialForm);
 
   const set = (field, value) => dispatch({ type: 'SET', field, value });
-  const reset = () => dispatch({ type: 'RESET', payload: ticket });
+  const reset = () => dispatch({ type: 'RESET', payload: initialForm });
 
   const updateMutation = useUpdateTicket();
 
   const handleSave = (e) => {
     e.preventDefault();
     if (!form.titre?.trim()) return;
+    const data = {
+      ...form,
+      assigneeIds: form.assigneeIds ? form.assigneeIds.map(Number) : [],
+      userStoryId: form.userStoryId == null || form.userStoryId === '' || isNaN(Number(form.userStoryId))
+        ? null : Number(form.userStoryId),
+    };
     updateMutation.mutate(
-      { id: ticket.id, data: form },
-      { onSuccess: () => onCancel() }
+      { id: ticket.id, data },
+      {
+        onSuccess: (responseData) => {
+          console.log('Save response:', responseData);
+          queryClient.setQueryData(['ticket', ticket.id], responseData);
+          queryClient.invalidateQueries({ queryKey: ['tickets'] });
+          onCancel();
+        },
+        onError: (err) => {
+          console.error('Save failed:', err);
+        },
+      }
     );
   };
 

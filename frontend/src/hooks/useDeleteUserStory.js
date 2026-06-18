@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTicket } from '@/services/ticketService';
+import { deleteUserStory } from '@/services/userStoryService';
 
-export function useCreateTicket() {
+export function useDeleteUserStory() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (data) => createTicket(data),
+    mutationFn: (id) => deleteUserStory(id),
   });
-  const mutate = (data, callbacks) => mutation.mutate(data, {
+  const mutate = (id, callbacks) => mutation.mutate(id, {
     ...callbacks,
     onSuccess: (resp, vars, ctx) => {
-      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
       callbacks?.onSuccess?.(resp, vars, ctx);
     },
   });

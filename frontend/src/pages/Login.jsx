@@ -1,7 +1,7 @@
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/store/authStore';
-import { useLoginMutation, useRegisterMutation } from '@/hooks/useAuthMutations';
+import { useAuthForm } from '@/hooks/useAuthMutations';
 import { ROUTES } from '@/constants/paths';
 
 const initialForm = { username: '', password: '', email: '', role: 'Développeur' };
@@ -33,7 +33,7 @@ export default function Login() {
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
 
-  const mutation = isRegister ? useRegisterMutation(form) : useLoginMutation(form);
+  const mutation = useAuthForm(form, isRegister);
 
   const pending = mutation.isPending;
   const errorMessage = getErrorMessage(mutation.error);
@@ -59,7 +59,9 @@ export default function Login() {
 
         <form onSubmit={(e) => {
           e.preventDefault();
-          mutation.mutate();
+          mutation.mutate(undefined, {
+            onSuccess: () => navigate(ROUTES.DASHBOARD),
+          });
         }}>
           {errorMessage && <div className="form-error">{errorMessage}</div>}
 

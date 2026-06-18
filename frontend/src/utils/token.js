@@ -16,5 +16,5 @@ export function getUserFromToken(token) {
     localStorage.removeItem('token');
     return null;
   }
-  return { username: payload.sub, role: payload.role };
+  return { id: payload.id, username: payload.sub, role: payload.role };
 }

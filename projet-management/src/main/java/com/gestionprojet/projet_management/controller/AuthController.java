@@ -42,7 +42,8 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        String token = jwtService.generateToken(request.getUsername());
+        Utilisateur user = utilisateurRepository.findByUsername(request.getUsername()).orElseThrow();
+        String token = jwtService.generateToken(user.getId(), user.getUsername(), user.getRole());
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
@@ -55,7 +56,7 @@ public class AuthController {
         utilisateur.setPassword(passwordEncoder.encode(dto.getPassword()));
         utilisateur.setCreatedAt(LocalDateTime.now());
         utilisateurRepository.save(utilisateur);
-        String token = jwtService.generateToken(utilisateur.getUsername());
+        String token = jwtService.generateToken(utilisateur.getId(), utilisateur.getUsername(), utilisateur.getRole());
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
     }
 }

@@ -26,7 +26,8 @@ public class UserStoryController {
 
     @GetMapping
     public ResponseEntity<List<UserStoryDTO>> getAllUserStories() {
-        List<UserStoryDTO> userStories = repo.findAll().stream().map(mapper::toDto).toList();
+        List<UserStory> stories = repo.findAll();
+        List<UserStoryDTO> userStories = stories.stream().map(mapper::toDto).toList();
         return ResponseEntity.ok(userStories);
     }
 

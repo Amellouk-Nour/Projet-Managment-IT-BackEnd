@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class TicketDTO {
@@ -30,8 +31,9 @@ public class TicketDTO {
     private BigDecimal tempsTest;
     private LocalDate dueAt;
     private Integer id;
-    private Integer assignedToId;
-    private String assignedToUsername;
+    private Set<Integer> assigneeIds;
+    private Set<String> assigneeUsernames;
     private Integer userStoryId;
+    private String userStoryTitre;
 
 }

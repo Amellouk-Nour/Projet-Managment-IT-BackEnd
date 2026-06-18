@@ -1,8 +1,8 @@
 import api from '@/api/axios';
 import { API_PATHS } from '@/constants/paths';
 
-export const fetchTickets = () =>
-  api.get(API_PATHS.TICKETS).then((r) => r.data);
+export const fetchTickets = (params) =>
+  api.get(API_PATHS.TICKETS, { params }).then((r) => r.data);
 
 export const createTicket = (data) =>
   api.post(API_PATHS.TICKETS, data).then((r) => r.data);

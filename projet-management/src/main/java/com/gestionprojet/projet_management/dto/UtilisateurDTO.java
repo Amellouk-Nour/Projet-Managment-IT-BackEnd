@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class UtilisateurDTO {
+    private Integer id;
     @NotBlank
     private String username;
     @NotBlank @Email

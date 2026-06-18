@@ -3,10 +3,15 @@ import { deleteTicket } from '@/services/ticketService';
 
 export function useDeleteTicket() {
   const queryClient = useQueryClient();
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (id) => deleteTicket(id),
-    onSuccess: () => {
+  });
+  const mutate = (id, callbacks) => mutation.mutate(id, {
+    ...callbacks,
+    onSuccess: (resp, vars, ctx) => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      callbacks?.onSuccess?.(resp, vars, ctx);
     },
   });
+  return { ...mutation, mutate };
 }

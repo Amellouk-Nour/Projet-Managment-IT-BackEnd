@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 
 const STATUS_OPTIONS = [
   { value: 'a_faire', label: 'À faire' },
@@ -18,6 +18,7 @@ const initialState = {
   estimReview: '',
   estimTest: '',
   dueAt: '',
+  assigneeIds: [],
   userStoryId: '',
 };
 
@@ -32,8 +33,10 @@ function formReducer(state, action) {
   }
 }
 
-export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories }) {
+export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories, users }) {
   const [form, dispatch] = useReducer(formReducer, initialState);
+  const [userSearch, setUserSearch] = useState('');
+  const filteredUsers = (users || []).filter((u) => u.username.toLowerCase().includes(userSearch.toLowerCase()));
 
   if (!isOpen) return null;
 
@@ -48,6 +51,7 @@ export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories
       estimReview: form.estimReview ? Number(form.estimReview) : undefined,
       estimTest: form.estimTest ? Number(form.estimTest) : undefined,
       dueAt: form.dueAt || undefined,
+      assigneeIds: form.assigneeIds ? form.assigneeIds.map(Number) : [],
       userStoryId: form.userStoryId ? Number(form.userStoryId) : undefined,
     };
     onSubmit(payload);
@@ -117,10 +121,35 @@ export default function TicketFormModal({ isOpen, onClose, onSubmit, userStories
             </div>
           </div>
           <div className="form-group">
+            <label>Assigné(s) à</label>
+            <input className="form-input user-search" placeholder="Rechercher..." value={userSearch} onChange={(e) => setUserSearch(e.target.value)} />
+            <div className="checkbox-group">
+              {filteredUsers.map((u) => (
+                <label key={u.id} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    value={String(u.id)}
+                    checked={(form.assigneeIds || []).includes(String(u.id))}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      const current = form.assigneeIds || [];
+                      if (e.target.checked) {
+                        set('assigneeIds', [...current, id]);
+                      } else {
+                        set('assigneeIds', current.filter((x) => x !== id));
+                      }
+                    }}
+                  />
+                  {u.username}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="form-group">
             <label>User Story</label>
             <select className="form-select" value={form.userStoryId} onChange={(e) => set('userStoryId', e.target.value)}>
               <option value="">—</option>
-              {userStories.map((us) => <option key={us.id} value={us.id}>{us.titre}</option>)}
+              {userStories.map((us) => <option key={us.id} value={String(us.id)}>{us.titre}</option>)}
             </select>
           </div>
           <div className="modal-actions">

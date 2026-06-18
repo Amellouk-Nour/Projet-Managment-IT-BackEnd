@@ -13,7 +13,7 @@ const COLUMNS = [
 export function useTicketBoard() {
   const { data: tickets = [], isLoading, error } = useQuery({
     queryKey: ['tickets'],
-    queryFn: fetchTickets,
+    queryFn: () => fetchTickets(),
   });
 
   const columns = COLUMNS.map((col) => ({

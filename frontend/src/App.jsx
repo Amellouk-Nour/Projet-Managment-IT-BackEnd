@@ -5,6 +5,8 @@ import { ROUTES } from '@/constants/paths';
 import {lazy,Suspense} from 'react';
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const TicketDetail = lazy(() => import('@/pages/TicketDetail'));
+const UserStoriesList = lazy(() => import('@/pages/UserStoriesList'));
+const UserStoryDetail = lazy(() => import('@/pages/UserStoryDetail'));
 
 function ProtectedRoute({ children }) {
   const user = useAuthStore((s) => s.user);
@@ -28,6 +30,20 @@ export default function App() {
           <ProtectedRoute>
             <Suspense fallback="Chargement...">
               <TicketDetail />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path={ROUTES.USER_STORIES} element={
+          <ProtectedRoute>
+            <Suspense fallback="Chargement...">
+              <UserStoriesList />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path={ROUTES.USER_STORY_DETAIL} element={
+          <ProtectedRoute>
+            <Suspense fallback="Chargement...">
+              <UserStoryDetail />
             </Suspense>
           </ProtectedRoute>
         } />

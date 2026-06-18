@@ -1,7 +1,21 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useTicketForm } from '@/hooks/useTicketForm';
+import { fetchUserStories } from '@/services/userStoryService';
+import { fetchUsers } from '@/services/userService';
 
 export default function TicketEditForm({ ticket, onCancel }) {
   const { form, set, handleSave, updateMutation, STATUS_OPTIONS } = useTicketForm(ticket, onCancel);
+  const [userSearch, setUserSearch] = useState('');
+  const { data: userStories = [] } = useQuery({
+    queryKey: ['userStories'],
+    queryFn: fetchUserStories,
+  });
+  const { data: users = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+  });
+  const filteredUsers = users.filter((u) => u.username.toLowerCase().includes(userSearch.toLowerCase()));
 
   return (
     <div className="detail-page">
@@ -11,7 +25,6 @@ export default function TicketEditForm({ ticket, onCancel }) {
           <button className="modal-close" onClick={onCancel}>&times;</button>
         </div>
         <form onSubmit={handleSave} className="modal-form">
-          {/* ... copie le formulaire depuis TicketDetail.jsx ... */}
           <div className="form-group">
             <label>Titre *</label>
             <input value={form.titre} onChange={(e) => set('titre', e.target.value)} required />
@@ -50,9 +63,57 @@ export default function TicketEditForm({ ticket, onCancel }) {
           </div>
           <div className="form-row">
             <div className="form-group">
+              <label>Temps Dev (h)</label>
+              <input type="number" step="0.1" value={form.tempsDev} onChange={(e) => set('tempsDev', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Temps Review (h)</label>
+              <input type="number" step="0.1" value={form.tempsReview} onChange={(e) => set('tempsReview', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Temps Test (h)</label>
+              <input type="number" step="0.1" value={form.tempsTest} onChange={(e) => set('tempsTest', e.target.value)} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
               <label>Date limite</label>
               <input type="date" value={form.dueAt} onChange={(e) => set('dueAt', e.target.value)} />
             </div>
+          </div>
+          <div className="form-group">
+            <label>Assigné(s) à</label>
+            <input className="form-input user-search" placeholder="Rechercher..." value={userSearch} onChange={(e) => setUserSearch(e.target.value)} />
+            <div className="checkbox-group">
+              {filteredUsers.map((u) => (
+                <label key={u.id} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    value={String(u.id)}
+                    checked={(form.assigneeIds || []).includes(String(u.id))}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      const current = form.assigneeIds || [];
+                      if (e.target.checked) {
+                        set('assigneeIds', [...current, id]);
+                      } else {
+                        set('assigneeIds', current.filter((x) => x !== id));
+                      }
+                    }}
+                  />
+                  {u.username}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="form-group">
+            <label>User Story</label>
+            <select className="form-select"
+                    value={form.userStoryId ?? ''}
+                    onChange={(e) => set('userStoryId', e.target.value)}>
+              <option value="">— Aucune —</option>
+              {userStories.map((us) => <option key={us.id} value={String(us.id)}>{us.titre}</option>)}
+            </select>
           </div>
           <div className="modal-actions">
             <button type="button" className="btn-secondary" onClick={onCancel}>Annuler</button>

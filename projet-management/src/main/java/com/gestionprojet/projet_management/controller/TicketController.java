@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,8 +69,9 @@ public class TicketController {
         Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
         Ticket ticket = mapper.toEntity(dto);
         ticket.setCreatedBy(currentUser);
-        if (ticket.getAssignedTo() == null) {
-            ticket.setAssignedTo(currentUser);
+        if (ticket.getAssignees() == null || ticket.getAssignees().isEmpty()) {
+            ticket.setAssignees(new HashSet<>());
+            ticket.getAssignees().add(currentUser);
         }
         Ticket saved = repo.save(ticket);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(saved));
@@ -109,7 +111,7 @@ public class TicketController {
                            || "admin".equalsIgnoreCase(currentUser.getRole());
             if (!isAdmin
                 && (t.getCreatedBy() == null || !t.getCreatedBy().getId().equals(currentUser.getId()))
-                && (t.getAssignedTo() == null || !t.getAssignedTo().getId().equals(currentUser.getId()))) {
+                && (t.getAssignees() == null || t.getAssignees().stream().noneMatch(u -> u.getId().equals(currentUser.getId())))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             t.setStatut(TicketStatus.valueOf(body.get("statut")));

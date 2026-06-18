@@ -12,6 +12,7 @@ const STATUS_OPTIONS = [
 
 export default function TicketView({ ticket, onEdit, onDelete }) {
   const navigate = useNavigate();
+  console.log('TicketView render:', ticket);
 
   return (
     <div className="detail-page">
@@ -52,16 +53,40 @@ export default function TicketView({ ticket, onEdit, onDelete }) {
               <span>{ticket.estimTest}h</span>
             </div>
           )}
+          {ticket.tempsDev != null && (
+            <div className="detail-field">
+              <span className="detail-label">Temps Dev</span>
+              <span>{ticket.tempsDev}h</span>
+            </div>
+          )}
+          {ticket.tempsReview != null && (
+            <div className="detail-field">
+              <span className="detail-label">Temps Review</span>
+              <span>{ticket.tempsReview}h</span>
+            </div>
+          )}
+          {ticket.tempsTest != null && (
+            <div className="detail-field">
+              <span className="detail-label">Temps Test</span>
+              <span>{ticket.tempsTest}h</span>
+            </div>
+          )}
           {ticket.dueAt && (
             <div className="detail-field">
               <span className="detail-label">Date limite</span>
               <span>{ticket.dueAt}</span>
             </div>
           )}
-          {(ticket.assignedToId || ticket.assignedToUsername) && (
+          {ticket.assigneeUsernames?.length > 0 && (
             <div className="detail-field">
-              <span className="detail-label">Assigné à</span>
-              <span>{ticket.assignedToUsername ?? `#${ticket.assignedToId}`}</span>
+              <span className="detail-label">Assigné(s) à</span>
+              <span>{ticket.assigneeUsernames.join(', ')}</span>
+            </div>
+          )}
+          {ticket.userStoryTitre && (
+            <div className="detail-field">
+              <span className="detail-label">User Story</span>
+              <span>{ticket.userStoryTitre}</span>
             </div>
           )}
         </div>
