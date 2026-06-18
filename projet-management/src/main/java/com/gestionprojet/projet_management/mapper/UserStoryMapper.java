@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class UserStoryMapper {
     public UserStoryDTO toDto(UserStory userStory){
         UserStoryDTO dto = new UserStoryDTO();
+        dto.setId(userStory.getId());
         dto.setTitre(userStory.getTitre());
         dto.setDescription(userStory.getDescription());
         dto.setCriteresAcceptation(userStory.getCriteresAcceptation());

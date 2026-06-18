@@ -25,9 +25,4 @@ public class UserStory {
 
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Projet projet;
-
-
 }

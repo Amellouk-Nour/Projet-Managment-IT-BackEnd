@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class UserStoryDTO {
+    private Integer id;
     @NotBlank
     private String titre;
     private String description;

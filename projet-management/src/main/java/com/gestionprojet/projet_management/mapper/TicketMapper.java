@@ -3,9 +3,11 @@ package com.gestionprojet.projet_management.mapper;
 import com.gestionprojet.projet_management.dto.TicketDTO;
 import com.gestionprojet.projet_management.entity.Ticket;
 import com.gestionprojet.projet_management.entity.TicketStatus;
+import com.gestionprojet.projet_management.entity.Utilisateur;
 import com.gestionprojet.projet_management.repository.UserStoryRepository;
 import com.gestionprojet.projet_management.repository.UtilisateurRepository;
 import org.springframework.stereotype.Component;
+import java.util.stream.Collectors;
 
 @Component
 public class TicketMapper {
@@ -20,6 +22,7 @@ public class TicketMapper {
 
     public TicketDTO toDto(Ticket ticket){
         TicketDTO dto = new TicketDTO();
+        dto.setId(ticket.getId());
         dto.setTitre(ticket.getTitre());
         dto.setDescription(ticket.getDescription());
         dto.setStatut(ticket.getStatut() != null ? ticket.getStatut().name() : null);
@@ -31,15 +34,20 @@ public class TicketMapper {
         dto.setTempsReview(ticket.getTempsReview());
         dto.setTempsTest(ticket.getTempsTest());
         dto.setDueAt(ticket.getDueAt());
-        dto.setAssignedToId(ticket.getAssignedTo() != null ? ticket.getAssignedTo().getId() : null);
+        dto.setAssigneeIds(ticket.getAssignees().stream().map(Utilisateur::getId).collect(Collectors.toSet()));
+        dto.setAssigneeUsernames(ticket.getAssignees().stream().map(Utilisateur::getUsername).collect(Collectors.toSet()));
         dto.setUserStoryId(ticket.getUserStory() != null ? ticket.getUserStory().getId() : null);
+        dto.setUserStoryTitre(ticket.getUserStory() != null ? ticket.getUserStory().getTitre() : null);
         return dto;
     }
 
     public Ticket toEntity(TicketDTO dto){
         Ticket ticket = new Ticket();
-        if (dto.getAssignedToId() != null) {
-            ticket.setAssignedTo(utilisateurRepo.findById(dto.getAssignedToId()).orElse(null));
+        if (dto.getAssigneeIds() != null) {
+            ticket.setAssignees(dto.getAssigneeIds().stream()
+                .map(id -> utilisateurRepo.findById(id).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toSet()));
         }
         if (dto.getUserStoryId() != null) {
             ticket.setUserStory(userStoryRepo.findById(dto.getUserStoryId()).orElse(null));
@@ -62,11 +70,14 @@ public class TicketMapper {
         ticket.setTempsReview(dto.getTempsReview());
         ticket.setTempsTest(dto.getTempsTest());
         ticket.setDueAt(dto.getDueAt());
-        if (dto.getAssignedToId() != null) {
-            ticket.setAssignedTo(utilisateurRepo.findById(dto.getAssignedToId()).orElse(null));
+        if (dto.getAssigneeIds() != null) {
+            ticket.setAssignees(dto.getAssigneeIds().stream()
+                .map(id -> utilisateurRepo.findById(id).orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toSet()));
         }
-        if (dto.getUserStoryId() != null) {
-            ticket.setUserStory(userStoryRepo.findById(dto.getUserStoryId()).orElse(null));
-        }
+        ticket.setUserStory(dto.getUserStoryId() != null
+                ? userStoryRepo.findById(dto.getUserStoryId()).orElse(null)
+                : null);
     }
 }

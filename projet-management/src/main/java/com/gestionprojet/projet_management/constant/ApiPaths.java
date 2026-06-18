@@ -10,4 +10,5 @@ public final class ApiPaths {
     public static final String PROJETS = API_V1 + "/projets";
     public static final String USER_STORIES = API_V1 + "/user-stories";
     public static final String AUTH = API_V1 + "/auth";
+    public static final String TICKET_STATUS = "/{id}/status";
 }

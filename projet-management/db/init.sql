@@ -16,13 +16,6 @@ CREATE TABLE IF NOT EXISTS utilisateur (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS projet (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
 CREATE TABLE IF NOT EXISTS user_story (
     id SERIAL PRIMARY KEY,
     titre VARCHAR(200) NOT NULL,
@@ -30,8 +23,7 @@ CREATE TABLE IF NOT EXISTS user_story (
     criteres_acceptation TEXT,
     priorite INTEGER DEFAULT 2,
     statut VARCHAR(20) NOT NULL DEFAULT 'a_faire',
-    created_at TIMESTAMP DEFAULT NOW(),
-    project_id INTEGER REFERENCES projet(id)
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS ticket (
@@ -51,4 +43,10 @@ CREATE TABLE IF NOT EXISTS ticket (
     user_story_id INTEGER REFERENCES user_story(id),
     assigned_to INTEGER REFERENCES utilisateur(id),
     created_by INTEGER REFERENCES utilisateur(id)
+);
+
+CREATE TABLE IF NOT EXISTS ticket_assignees (
+    ticket_id INTEGER NOT NULL REFERENCES ticket(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES utilisateur(id) ON DELETE CASCADE,
+    PRIMARY KEY (ticket_id, user_id)
 );

@@ -3,6 +3,7 @@ package com.gestionprojet.projet_management.specification;
 import com.gestionprojet.projet_management.entity.Ticket;
 import com.gestionprojet.projet_management.entity.TicketStatus;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -26,8 +27,9 @@ public class TicketSpecification {
     public static Specification<Ticket> hasAssignedToId(Integer assignedToId) {
         return (root, query, cb) -> {
             if (assignedToId == null) return null;
-            Join<Object, Object> assignedTo = root.join("assignedTo");
-            return cb.equal(assignedTo.get("id"), assignedToId);
+            query.distinct(true);
+            jakarta.persistence.criteria.Join<Object, Object> assignees = root.join("assignees");
+            return cb.equal(assignees.get("id"), assignedToId);
         };
     }
 
@@ -52,4 +54,18 @@ public class TicketSpecification {
             return cb.greaterThanOrEqualTo(root.get("dueAt"), date);
         };
     }
+
+    public static Specification<Ticket> createdByOrAssignedTo(Integer userId) {
+        return (root, query, cb) -> {
+            if (userId == null) return null;
+            query.distinct(true);
+            jakarta.persistence.criteria.Join<Object, Object> createdBy = root.join("createdBy", jakarta.persistence.criteria.JoinType.LEFT);
+            jakarta.persistence.criteria.Join<Object, Object> assignees = root.join("assignees", jakarta.persistence.criteria.JoinType.LEFT);
+            return cb.or(
+                cb.equal(createdBy.get("id"), userId),
+                cb.equal(assignees.get("id"), userId)
+            );
+        };
+    }
+
 }
